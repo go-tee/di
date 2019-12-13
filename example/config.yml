@@ -1,0 +1,41 @@
+parameters:
+  abc: test
+  database: none
+
+services:
+
+  Req:
+    scope: prototype
+    type: '*github.com/gooff/di/example.Request'
+    returns: 'example.CreateRequest(req)'
+    arguments:
+      req: "*http.Request"
+    imports:
+      - 'net/http'
+
+  sendEmail:
+    scope: prototype
+    type: '*github.com/gooff/di/example.SendEmail'
+    interface: 'github.com/gooff/di/example.EmailSender'
+#    returns: 'example.NewSendEmail(@{req})'
+    properties:
+      From: '"hi@welcome.com"'
+      Request: '@{req}'
+    arguments:
+      req: "*http.Request"
+#
+#  CustomerWelcome:
+#    type: '*github.com/gooff/di/example.CustomerWelcome'
+#    returns: example.NewCustomerWelcome(@{sendEmail})
+#
+##  CustomerWelcomeAuto: example.NewCustomerWelcome
+
+extensions:
+  navigation: github.com/gooff/di/ext.NavigationExtension
+
+navigation:
+  abc:
+    test: ok
+
+includes:
+  - database.yml
