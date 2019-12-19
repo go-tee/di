@@ -27,6 +27,14 @@ func (e *BaseExtension) SetConfig(config config.Config) {
 	e.config = config
 }
 
+func (e *BaseExtension) GetName() string {
+	return e.name
+}
+
+func (e *BaseExtension) GetConfig() config.Config {
+	return e.config
+}
+
 func (e *BaseExtension) Prefix(name string) string {
 	if utils.FirstRune(name) == '@' {
 		return fmt.Sprintf("@%s.%s", e.name, name[1:])
