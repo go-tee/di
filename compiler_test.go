@@ -5,9 +5,9 @@ import (
 
 	"github.com/elliotchance/testify-stats/assert"
 
-	"github.com/gooff/di/config"
-	"github.com/gooff/di/container"
-	"github.com/gooff/di/ext"
+	"github.com/go-tee/di/config"
+	"github.com/go-tee/di/container"
+	"github.com/go-tee/di/ext"
 )
 
 type FooExtension struct {

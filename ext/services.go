@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/gooff/di/config"
-	"github.com/gooff/di/container"
+	"github.com/go-tee/di/config"
+	"github.com/go-tee/di/container"
 )
 
 func NewServicesExtension() CompilerExtension {

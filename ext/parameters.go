@@ -1,7 +1,7 @@
 package ext
 
 import (
-	"github.com/gooff/di/container"
+	"github.com/go-tee/di/container"
 )
 
 func NewParametersExtension() CompilerExtension {

@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/ast/astutil"
 
-	"github.com/gooff/di/utils/shortcut"
+	"github.com/go-tee/di/utils/shortcut"
 )
 
 func (b *Builder) astGetMethods(tree Tree, paths map[string][]string) []ast.Decl {

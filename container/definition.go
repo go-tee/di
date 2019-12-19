@@ -3,7 +3,7 @@ package container
 import (
 	"unicode"
 
-	"github.com/gooff/di/utils"
+	"github.com/go-tee/di/utils"
 )
 
 func NewServiceDefinition() *Definition {

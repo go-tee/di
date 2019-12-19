@@ -3,7 +3,7 @@ package container
 import (
 	"go/ast"
 
-	"github.com/gooff/di/utils/shortcut"
+	"github.com/go-tee/di/utils/shortcut"
 )
 
 func (b *Builder) astBlocks(tree Tree) []ast.Decl {

@@ -4,7 +4,7 @@ import (
 	"go/ast"
 	"go/token"
 
-	"github.com/gooff/di/utils/shortcut"
+	"github.com/go-tee/di/utils/shortcut"
 )
 
 func (b *Builder) astNewContainerFunc() *ast.FuncDecl {

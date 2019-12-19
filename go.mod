@@ -1,4 +1,4 @@
-module github.com/gooff/di
+module github.com/go-tee/di
 
 go 1.12
 

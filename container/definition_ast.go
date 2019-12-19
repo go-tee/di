@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/gooff/di/utils/shortcut"
+	"github.com/go-tee/di/utils/shortcut"
 )
 
 func (d *Definition) astContainerFieldType(builder *Builder) ast.Expr {

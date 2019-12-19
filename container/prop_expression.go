@@ -10,7 +10,7 @@ import (
 	"github.com/elliotchance/pie/pie"
 	"golang.org/x/tools/go/ast/astutil"
 
-	"github.com/gooff/di/utils/shortcut"
+	"github.com/go-tee/di/utils/shortcut"
 )
 
 type defExpression string

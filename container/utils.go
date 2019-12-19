@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/gooff/di/utils"
+	"github.com/go-tee/di/utils"
 )
 
 func isPublicProperty(name string) bool {

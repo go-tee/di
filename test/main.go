@@ -7,10 +7,10 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/gooff/di"
-	"github.com/gooff/di/config"
-	"github.com/gooff/di/ext"
-	"github.com/gooff/di/utils"
+	"github.com/go-tee/di"
+	"github.com/go-tee/di/config"
+	"github.com/go-tee/di/ext"
+	"github.com/go-tee/di/utils"
 )
 
 var files utils.StringSlice
