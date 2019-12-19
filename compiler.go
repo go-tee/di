@@ -51,7 +51,9 @@ func (c *Compiler) MustAddExtension(name string, extension ext.CompilerExtension
 func (c *Compiler) Compile(packageName string, outputFile string) error {
 	for _, section := range c.sections {
 		sectionConfig := (*c.config)[section]
-		c.extensions[section].SetConfig(sectionConfig.(config.Config))
+		if conf, ok := sectionConfig.(config.Config); ok {
+			c.extensions[section].SetConfig(conf)
+		}
 	}
 
 	for _, section := range c.sections {
