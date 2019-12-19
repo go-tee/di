@@ -14,7 +14,7 @@ type FooExtension struct {
 	ext.BaseExtension
 }
 
-func (p *FooExtension) Prepare(builder *container.Builder) {
+func (p *FooExtension) Prepare(builder *container.Builder) error {
 	panic("prepare not implemented")
 }
 
