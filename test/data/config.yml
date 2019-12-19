@@ -6,7 +6,7 @@ services:
 
   Req:
     scope: prototype
-    type: '*github.com/gooff/di/example.Request'
+    type: '*github.com/gooff/di/test/example.Request'
     returns: 'example.CreateRequest(req)'
     arguments:
       req: "*http.Request"
@@ -15,8 +15,8 @@ services:
 
   sendEmail:
     scope: prototype
-    type: '*github.com/gooff/di/example.SendEmail'
-    interface: 'github.com/gooff/di/example.EmailSender'
+    type: '*github.com/gooff/di/test/example.SendEmail'
+    interface: 'github.com/gooff/di/test/example.EmailSender'
 #    returns: 'example.NewSendEmail(@{req})'
     properties:
       From: '"hi@welcome.com"'
@@ -25,7 +25,7 @@ services:
       req: "*http.Request"
 #
 #  CustomerWelcome:
-#    type: '*github.com/gooff/di/example.CustomerWelcome'
+#    type: '*github.com/gooff/di/test/example.CustomerWelcome'
 #    returns: example.NewCustomerWelcome(@{sendEmail})
 #
 ##  CustomerWelcomeAuto: example.NewCustomerWelcome

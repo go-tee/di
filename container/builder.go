@@ -6,11 +6,10 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
-	"log"
 	"os"
 	"strings"
 
-	. "github.com/gooff/di/container/utilsast"
+	"github.com/gooff/di/utils/shortcut"
 )
 
 func NewBuilder() *Builder {
@@ -41,15 +40,15 @@ func (b *Builder) GetAliases() map[string]string {
 	return b.aliases
 }
 
-func (b *Builder) AddDefinition(name string) *Definition {
+func (b *Builder) AddDefinition(name string) (*Definition, error) {
 	name = b.resolveName(name)
 
 	if b.HasDefinition(name) {
-		log.Fatalln("Service", name, "already registered")
+		return nil, fmt.Errorf("service '%s' already registered", name)
 	}
 	for n, _ := range b.definitions {
 		if strings.ToLower(n) == strings.ToLower(name) {
-			log.Fatalln("Service", name, "already registered in a case-insensitive manner")
+			return nil, fmt.Errorf("service '%s' already registered in a case-insensitive manner", name)
 		}
 	}
 
@@ -57,6 +56,14 @@ func (b *Builder) AddDefinition(name string) *Definition {
 	def.SetName(name)
 	b.definitions[name] = def
 
+	return def, nil
+}
+
+func (b *Builder) MustAddDefinition(name string) *Definition {
+	def, err := b.AddDefinition(name)
+	if err != nil {
+		panic(err)
+	}
 	return def
 }
 
@@ -108,34 +115,6 @@ func (b *Builder) Build(packageName string, outputFile string) error {
 	return printer.Fprint(outFile, b.fset, b.file)
 }
 
-// func (b *Builder) astContainerStruct() ast.Decl {
-// 	var containerFields []*ast.Field
-//
-// 	for name, def := range b.definitions {
-// 		log.Println("Create container field", name)
-// 		containerFields = append(containerFields, &ast.Field{
-// 			Names: []*ast.Ident{
-// 				NewIdent(strings.Replace(name, ".", "_", -1)),
-// 			},
-// 			Type: def.astContainerFieldType(b),
-// 		})
-// 	}
-//
-// 	return &ast.GenDecl{
-// 		Tok: token.TYPE,
-// 		Specs: []ast.Spec{
-// 			&ast.TypeSpec{
-// 				Name: NewIdent("Container"),
-// 				Type: &ast.StructType{
-// 					Fields: &ast.FieldList{
-// 						List: containerFields,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
-// }
-
 func (b *Builder) astDefaultContainer() *ast.GenDecl {
-	return NewVar("DefaultContainer", "NewContainer()")
+	return shortcut.NewVar("DefaultContainer", "NewContainer()")
 }

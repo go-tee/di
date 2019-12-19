@@ -3,19 +3,12 @@ package container
 import (
 	"strings"
 	"unicode"
+
+	"github.com/gooff/di/utils"
 )
 
 func isPublicProperty(name string) bool {
-	return unicode.IsUpper(firstRune(name))
-}
-
-func firstRune(str string) (first rune) {
-	for _, c := range str {
-		first = c
-		break
-	}
-
-	return
+	return unicode.IsUpper(utils.FirstRune(name))
 }
 
 func firstUpper(name string) string {

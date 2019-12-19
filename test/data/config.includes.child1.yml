@@ -1,0 +1,9 @@
+parameters:
+  me: [config.includes.child1.yml]
+  scalar: 3
+  list:
+
+services:
+  userManager:
+    properties:
+      ServiceProperty: simple

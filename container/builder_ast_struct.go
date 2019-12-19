@@ -3,7 +3,7 @@ package container
 import (
 	"go/ast"
 
-	. "github.com/gooff/di/container/utilsast"
+	"github.com/gooff/di/utils/shortcut"
 )
 
 func (b *Builder) astBlocks(tree Tree) []ast.Decl {
@@ -14,20 +14,20 @@ func (b *Builder) astBlocks(tree Tree) []ast.Decl {
 }
 
 func (b *Builder) astContainerStruct() ast.Decl {
-	return NewStruct("Container", []*ast.Field{
+	return shortcut.NewStruct("Container", []*ast.Field{
 		{
 			Names: []*ast.Ident{{Name: "parameters"}},
-			Type:  NewIdent("ParametersBlock"),
+			Type:  shortcut.NewIdent("ParametersBlock"),
 		},
 		{
 			Names: []*ast.Ident{{Name: "services"}},
-			Type:  NewIdent("ServicesBlock"),
+			Type:  shortcut.NewIdent("ServicesBlock"),
 		},
 	})
 }
 
 func (b *Builder) astParameterBlockStruct() ast.Decl {
-	return NewStruct("ParametersBlock", []*ast.Field{})
+	return shortcut.NewStruct("ParametersBlock", []*ast.Field{})
 }
 
 func (b *Builder) astTreeBlockStructs(tree Tree, prefix string) []ast.Decl {
@@ -44,106 +44,11 @@ func (b *Builder) astTreeBlockStructs(tree Tree, prefix string) []ast.Decl {
 			blockName := firstUpper(name)
 			fields = append(fields, &ast.Field{
 				Names: []*ast.Ident{{Name: name}},
-				Type: NewIdent(prefix + blockName + "ServicesBlock"),
+				Type:  shortcut.NewIdent(prefix + blockName + "ServicesBlock"),
 			})
 			structs = append(structs, b.astTreeBlockStructs(subtree, prefix + blockName)...)
 		}
 	}
 
-	return append([]ast.Decl{NewStruct(prefix + "ServicesBlock", fields)}, structs...)
+	return append([]ast.Decl{shortcut.NewStruct(prefix + "ServicesBlock", fields)}, structs...)
 }
-
-
-
-
-
-
-// func (b *Builder) astContainerStruct_2() ast.Decl {
-// 	var containerFields []*ast.Field
-// 	tree, _ := prepareTree(b.definitions)
-//
-// 	for name, dt := range tree {
-// 		containerFields = append(containerFields, &ast.Field{
-// 			Names: []*ast.Ident{{Name: name}},
-// 			Type:  b.prepareContainerType(dt),
-// 		})
-// 	}
-//
-// 	// for name, def := range b.definitions {
-// 	// 	log.Println("Create container field", name)
-// 	// 	containerFields = append(containerFields, &ast.Field{
-// 	// 		Names: []*ast.Ident{
-// 	// 			NewIdent(strings.Replace(name, ".", "_", -1)),
-// 	// 		},
-// 	// 		Type: def.astContainerFieldType(b),
-// 	// 	})
-// 	// }
-//
-// 	return &ast.GenDecl{
-// 		Tok: token.TYPE,
-// 		Specs: []ast.Spec{
-// 			&ast.TypeSpec{
-// 				Name: NewIdent("Container"),
-// 				Type: &ast.StructType{
-// 					Fields: &ast.FieldList{
-// 						List: containerFields,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
-// }
-
-// func (b *Builder) astContainerStruct() ast.Decl {
-// 	tree, _ := prepareTree(b.definitions)
-//
-// 	var containerFields []*ast.Field
-
-//
-// 	// for _, serviceName := range services.ServiceNames() {
-// 	// 	service := services[serviceName]
-// 	//
-// 	// 	containerFields = append(containerFields, &ast.Field{
-// 	// 		Names: []*ast.Ident{
-// 	// 			{Name: serviceName},
-// 	// 		},
-// 	// 		Type: service.ContainerFieldType(services),
-// 	// 	})
-// 	// }
-//
-// 	return &ast.GenDecl{
-// 		Tok: token.TYPE,
-// 		Specs: []ast.Spec{
-// 			&ast.TypeSpec{
-// 				Name: NewIdent("Container"),
-// 				Type: &ast.StructType{
-// 					Fields: &ast.FieldList{
-// 						List: containerFields,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}
-// }
-
-// func (b *Builder) prepareContainerType(dt interface{}) ast.Expr {
-// 	if tree, ok := dt.(Tree); ok {
-// 		var fields []*ast.Field
-// 		for name, dt := range tree {
-// 			fields = append(fields, &ast.Field{
-// 				Names: []*ast.Ident{
-// 					NewIdent(name),
-// 				},
-// 				Type: b.prepareContainerType(dt),
-// 			})
-// 		}
-//
-// 		return &ast.StructType{
-// 			Fields: &ast.FieldList{
-// 				List: fields,
-// 			},
-// 		}
-// 	}
-//
-// 	return dt.(*Definition).astContainerFieldType(b)
-// }

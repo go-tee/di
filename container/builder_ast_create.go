@@ -4,7 +4,7 @@ import (
 	"go/ast"
 	"go/token"
 
-	. "github.com/gooff/di/container/utilsast"
+	"github.com/gooff/di/utils/shortcut"
 )
 
 func (b *Builder) astNewContainerFunc() *ast.FuncDecl {
@@ -12,10 +12,10 @@ func (b *Builder) astNewContainerFunc() *ast.FuncDecl {
 	statements := []ast.Stmt{
 		&ast.AssignStmt{
 			Tok: token.DEFINE,
-			Lhs: []ast.Expr{NewIdent(containerTempVariable)},
+			Lhs: []ast.Expr{shortcut.NewIdent(containerTempVariable)},
 			Rhs: []ast.Expr{
 				&ast.CompositeLit{
-					Type: NewIdent("&Container"),
+					Type: shortcut.NewIdent("&Container"),
 				},
 			},
 		},
@@ -26,7 +26,7 @@ func (b *Builder) astNewContainerFunc() *ast.FuncDecl {
 			statements = append(statements,
 				&ast.AssignStmt{
 					Tok: token.ASSIGN,
-					Lhs: []ast.Expr{NewIdent(containerTempVariable + ".services." + name)},
+					Lhs: []ast.Expr{shortcut.NewIdent(containerTempVariable + ".services." + name)},
 					Rhs: []ast.Expr{
 						&ast.FuncLit{
 							Type: def.astFunctionPrototype(b),
@@ -38,7 +38,7 @@ func (b *Builder) astNewContainerFunc() *ast.FuncDecl {
 		}
 	}
 
-	statements = append(statements, NewReturn(NewIdent(containerTempVariable)))
+	statements = append(statements, shortcut.NewReturn(shortcut.NewIdent(containerTempVariable)))
 
-	return NewFunc("NewContainer", nil, []string{"*Container"}, NewBlock(statements...))
+	return shortcut.NewFunc("NewContainer", nil, []string{"*Container"}, shortcut.NewBlock(statements...))
 }

@@ -1,0 +1,11 @@
+parameters:
+  scalar: 1
+  list: [1, 2]
+
+services:
+  userManager:
+    type: '*github.com/go-tee/di/test.UserManager'
+
+includes:
+  - config.includes.child1.yml
+  - config.includes.child2.yml

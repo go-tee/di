@@ -2,6 +2,8 @@ package container
 
 import (
 	"unicode"
+
+	"github.com/gooff/di/utils"
 )
 
 func NewServiceDefinition() *Definition {
@@ -134,5 +136,5 @@ func (d *Definition) AddSetup(entity string, args ...string) {
 }
 
 func (d *Definition) isPublic() bool {
-	return unicode.IsUpper(firstRune(d.defName))
+	return unicode.IsUpper(utils.FirstRune(d.defName))
 }

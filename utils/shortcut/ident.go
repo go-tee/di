@@ -1,4 +1,4 @@
-package utilsast
+package shortcut
 
 import (
 	"go/ast"

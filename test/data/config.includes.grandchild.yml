@@ -1,0 +1,2 @@
+parameters:
+  me: [config.includes.grandchild.yml]

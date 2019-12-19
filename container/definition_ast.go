@@ -7,12 +7,12 @@ import (
 	"sort"
 	"strings"
 
-	. "github.com/gooff/di/container/utilsast"
+	"github.com/gooff/di/utils/shortcut"
 )
 
 func (d *Definition) astContainerFieldType(builder *Builder) ast.Expr {
 	if d.defScope.isContainer() && len(d.defArguments) == 0 {
-		return NewIdent(d.interfaceOrLocalEntityPointerType())
+		return shortcut.NewIdent(d.interfaceOrLocalEntityPointerType())
 	}
 
 	return d.astFunctionPrototype(builder)
@@ -24,14 +24,14 @@ func (d *Definition) astFunctionPrototype(builder *Builder) *ast.FuncType {
 		args, returns := t.parseFunctionType()
 
 		return &ast.FuncType{
-			Params:  NewFieldList(args),
-			Results: NewFieldList(returns...),
+			Params:  shortcut.NewFieldList(args),
+			Results: shortcut.NewFieldList(returns...),
 		}
 	}
 
 	return &ast.FuncType{
 		Params:  d.astAllArguments(builder),
-		Results: NewFieldList(string(t)),
+		Results: shortcut.NewFieldList(string(t)),
 	}
 }
 
@@ -67,7 +67,7 @@ func (d *Definition) astDependencyArguments(builder *Builder) *ast.FieldList {
 
 	for _, dep := range d.defReturns.dependencyNames() {
 		funcParams.List = append(funcParams.List, &ast.Field{
-			Type: NewIdent(dep + " " + builder.GetDefinition(dep).interfaceOrLocalEntityType(builder, false)),
+			Type: shortcut.NewIdent(dep + " " + builder.GetDefinition(dep).interfaceOrLocalEntityType(builder, false)),
 		})
 	}
 
@@ -82,8 +82,8 @@ func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builde
 		}
 		arguments = append(arguments, d.defArguments.names()...)
 
-		return NewBlock(
-			NewReturn(NewIdent("container.services." + serviceName + "(" + strings.Join(arguments, ", ") + ")")),
+		return shortcut.NewBlock(
+			shortcut.NewReturn(shortcut.NewIdent("container.services." + serviceName + "(" + strings.Join(arguments, ", ") + ")")),
 		)
 	}
 
@@ -96,19 +96,19 @@ func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builde
 		instantiation = []ast.Stmt{
 			&ast.AssignStmt{
 				Tok: token.DEFINE,
-				Lhs: []ast.Expr{NewIdent(serviceTempVariable)},
+				Lhs: []ast.Expr{shortcut.NewIdent(serviceTempVariable)},
 				Rhs: []ast.Expr{
 					&ast.CompositeLit{
-						Type: NewIdent(d.defType.createLocalEntityType()),
+						Type: shortcut.NewIdent(d.defType.createLocalEntityType()),
 					},
 				},
 			},
 		}
 	} else {
-		lhs := []ast.Expr{NewIdent(serviceTempVariable)}
+		lhs := []ast.Expr{shortcut.NewIdent(serviceTempVariable)}
 
 		if d.defError != "" {
-			lhs = append(lhs, NewIdent("err"))
+			lhs = append(lhs, shortcut.NewIdent("err"))
 		}
 
 		instantiation = []ast.Stmt{
@@ -116,18 +116,18 @@ func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builde
 				Tok: token.DEFINE,
 				Lhs: lhs,
 				Rhs: []ast.Expr{
-					NewIdent(d.defReturns.performSubstitutions(fset, file, builder, name == "")),
+					shortcut.NewIdent(d.defReturns.performSubstitutions(fset, file, builder, name == "")),
 				},
 			},
 		}
 
 		if d.defError != "" {
 			instantiation = append(instantiation, &ast.IfStmt{
-				Cond: NewIdent("err != nil"),
+				Cond: shortcut.NewIdent("err != nil"),
 				Body: &ast.BlockStmt{
 					List: []ast.Stmt{
 						&ast.ExprStmt{
-							X: NewIdent(d.defError),
+							X: shortcut.NewIdent(d.defError),
 						},
 					},
 				},
@@ -169,16 +169,16 @@ func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builde
 
 		// Returns
 		if d.defType.isPointer() || d.defInterface != "" {
-			stmts = append(stmts, NewReturn(NewIdent(serviceVariable)))
+			stmts = append(stmts, shortcut.NewReturn(shortcut.NewIdent(serviceVariable)))
 		} else {
-			stmts = append(stmts, NewReturn(NewIdent("*"+serviceVariable)))
+			stmts = append(stmts, shortcut.NewReturn(shortcut.NewIdent("*"+serviceVariable)))
 		}
 	} else {
 		stmts = append(stmts, instantiation...)
-		stmts = append(stmts, NewReturn(NewIdent("service")))
+		stmts = append(stmts, shortcut.NewReturn(shortcut.NewIdent("service")))
 	}
 
-	return NewBlock(stmts...)
+	return shortcut.NewBlock(stmts...)
 }
 
 func (d *Definition) imports() map[string]string {

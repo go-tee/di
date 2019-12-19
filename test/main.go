@@ -7,11 +7,13 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/gooff/di/ds"
+	"github.com/gooff/di"
+	"github.com/gooff/di/config"
 	"github.com/gooff/di/ext"
+	"github.com/gooff/di/utils"
 )
 
-var files ds.StringSlice
+var files utils.StringSlice
 var showConfig bool
 var output string
 
@@ -24,8 +26,11 @@ func main() {
 	if flag.NFlag() == 0 {
 		flag.PrintDefaults()
 	} else {
-		config := ds.ParseConfig(files...)
-		merged, err := yaml.Marshal(config)
+		conf, err := config.ParseConfig(files...)
+		if err != nil {
+			log.Fatalf("Error loading config: %s", err)
+		}
+		merged, err := yaml.Marshal(conf)
 		if err != nil {
 			log.Fatalf("Error building merged YAML: %s", err)
 		}
@@ -34,12 +39,12 @@ func main() {
 			return
 		}
 
-		c := ext.NewCompiler(config)
+		c := di.NewCompiler(conf)
 		// c.AddExtension("parameters", ext.NewParametersExtension())
-		c.AddExtension("services", ext.NewServicesExtension())
-		c.AddExtension("navigation", ext.NewNavigationExtension())
+		c.MustAddExtension("services", ext.NewServicesExtension())
+		c.MustAddExtension("navigation", ext.NewNavigationExtension())
 
-		fmt.Printf("Result: %s\n", config)
+		fmt.Printf("Result: %s\n", conf)
 
 		if err = c.Compile("main", output); err != nil {
 			log.Fatalln("Compiler error:", err)

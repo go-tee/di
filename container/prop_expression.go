@@ -10,7 +10,7 @@ import (
 	"github.com/elliotchance/pie/pie"
 	"golang.org/x/tools/go/ast/astutil"
 
-	"github.com/gooff/di/container/utilsast"
+	"github.com/gooff/di/utils/shortcut"
 )
 
 type defExpression string
@@ -36,7 +36,7 @@ func (e defExpression) performSubstitutions(fset *token.FileSet, file *ast.File,
 	stmt := string(e)
 
 	// Replace environment variables.
-	stmt = utilsast.ReplaceAllStringSubmatchFunc(
+	stmt = shortcut.ReplaceAllStringSubmatchFunc(
 		regexp.MustCompile(`\${(.*?)}`), stmt, func(i []string) string {
 			astutil.AddImport(fset, file, "os")
 
@@ -44,7 +44,7 @@ func (e defExpression) performSubstitutions(fset *token.FileSet, file *ast.File,
 		})
 
 	// Replace service names.
-	stmt = utilsast.ReplaceAllStringSubmatchFunc(
+	stmt = shortcut.ReplaceAllStringSubmatchFunc(
 		regexp.MustCompile(`@{(.*?)}`), stmt, func(match []string) string {
 			if fromArgs {
 				return strings.Split(match[1], "(")[0]

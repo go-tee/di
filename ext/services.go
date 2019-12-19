@@ -1,11 +1,11 @@
 package ext
 
 import (
-	"log"
+	"fmt"
 	"reflect"
 
+	"github.com/gooff/di/config"
 	"github.com/gooff/di/container"
-	"github.com/gooff/di/ds"
 )
 
 func NewServicesExtension() CompilerExtension {
@@ -14,33 +14,43 @@ func NewServicesExtension() CompilerExtension {
 
 type ServicesExtension struct {
 	name   string
-	config ds.Config
+	config config.Config
 }
 
 func (e *ServicesExtension) Init(name string) {
 	e.name = name
 }
 
-func (e *ServicesExtension) SetConfig(config ds.Config) {
+func (e *ServicesExtension) SetConfig(config config.Config) {
 	e.config = config
 }
 
-func (e *ServicesExtension) Prepare(builder *container.Builder) {
-	for name, config := range e.config {
-		loadDefinition(builder, name, config)
+func (e *ServicesExtension) Prepare(builder *container.Builder) error {
+	for name, conf := range e.config {
+		err := loadDefinition(builder, name, conf)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
-func loadDefinition(builder *container.Builder, name string, config interface{}) {
-	t := reflect.TypeOf(config)
+func loadDefinition(builder *container.Builder, name string, conf interface{}) error {
+	t := reflect.TypeOf(conf)
 	if t.Kind() == reflect.String {
-		builder.AddDefinition(name).
-			SetType(config.(string))
-		return
+		def, err := builder.AddDefinition(name)
+		if err != nil {
+			return err
+		}
+		def.SetType(conf.(string))
+		return nil
 	}
 	if t.Kind() == reflect.Map {
-		m := config.(ds.Config)
-		def := builder.AddDefinition(name)
+		m := conf.(config.Config)
+		def, err := builder.AddDefinition(name)
+		if err != nil {
+			return err
+		}
 		if v, ok := m["type"]; ok {
 			def.SetType(v.(string))
 		}
@@ -48,45 +58,56 @@ func loadDefinition(builder *container.Builder, name string, config interface{})
 			def.SetInterface(v.(string))
 		}
 		if v, ok := m["properties"]; ok {
-			def.SetProperties(toMap(v))
+			converted, err := toMap(v)
+			if err != nil {
+				return fmt.Errorf("cannot set properties for service '%s', error: %s", name, err)
+			}
+			def.SetProperties(converted)
 		}
 		if v, ok := m["returns"]; ok {
 			def.SetReturns(v.(string))
 		}
 		if v, ok := m["arguments"]; ok {
-			def.SetArguments(toMap(v))
+			converted, err := toMap(v)
+			if err != nil {
+				return fmt.Errorf("cannot set arguments for service '%s', error: %s", name, err)
+			}
+			def.SetArguments(converted)
 		}
 		if v, ok := m["error"]; ok {
 			def.SetError(v.(string))
 		}
 		if v, ok := m["imports"]; ok {
-			def.SetImports(toSlice(v))
+			converted, err := toSlice(v)
+			if err != nil {
+				return fmt.Errorf("cannot set imports for service '%s', error: %s", name, err)
+			}
+			def.SetImports(converted)
 		}
 		if v, ok := m["scope"]; ok {
 			def.SetScope(v.(string))
 		}
-		return
+		return nil
 	}
 
-	log.Fatalln("Undetected service definition type from config type =", t.Kind())
+	return fmt.Errorf("service named '%s' have unsupported config type '%s'", name, t.Kind())
 }
 
-func toMap(value interface{}) map[string]string {
+func toMap(value interface{}) (map[string]string, error) {
 	t := reflect.TypeOf(value)
 	if t.Kind() == reflect.Map {
 		out := map[string]string{}
-		m := value.(ds.Config)
+		m := value.(config.Config)
 		for k, v := range m {
 			out[k] = v.(string)
 		}
-		return out
+		return out, nil
 	}
 
-	log.Fatalln("Undetected value toMap =", t.Kind())
-	return nil
+	return nil, fmt.Errorf("undetected value for map conversion: %s", t.Kind())
 }
 
-func toSlice(value interface{}) []string {
+func toSlice(value interface{}) ([]string, error) {
 	t := reflect.ValueOf(value)
 	if t.Kind() == reflect.Slice {
 		ret := make([]string, t.Len())
@@ -94,9 +115,8 @@ func toSlice(value interface{}) []string {
 			ret[i] = t.Index(i).Interface().(string)
 		}
 
-		return ret
+		return ret, nil
 	}
 
-	log.Fatalln("Undetected value toSlice =", t.Kind())
-	return nil
+	return nil, fmt.Errorf("undetected value for slice conversion: %s", t.Kind())
 }

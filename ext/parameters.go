@@ -2,7 +2,6 @@ package ext
 
 import (
 	"github.com/gooff/di/container"
-	"github.com/gooff/di/ds"
 )
 
 func NewParametersExtension() CompilerExtension {
@@ -10,22 +9,9 @@ func NewParametersExtension() CompilerExtension {
 }
 
 type ParametersExtension struct {
-
+	BaseExtension
 }
 
-func (p *ParametersExtension) Init(name string) {
+func (p *ParametersExtension) Prepare(builder *container.Builder) error {
 	panic("implement me")
 }
-
-func (p *ParametersExtension) SetConfig(config ds.Config) {
-	panic("implement me")
-}
-
-func (p *ParametersExtension) Prepare(builder *container.Builder) {
-	panic("implement me")
-}
-
-func (p *ParametersExtension) Compile(builder *container.Builder) {
-	panic("implement me")
-}
-
