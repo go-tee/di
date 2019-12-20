@@ -11,15 +11,10 @@ func isPublicProperty(name string) bool {
 	return unicode.IsUpper(utils.FirstRune(name))
 }
 
-func firstUpper(name string) string {
-	runes := []rune(name)
-	return string(unicode.ToUpper(runes[0])) + string(runes[1:])
-}
-
 func methodName(path []string) string {
 	var upper []string
 	for _, name := range path {
-		upper = append(upper, firstUpper(name))
+		upper = append(upper, utils.FirstUpper(name))
 	}
 	return strings.Join(upper, "")
 }

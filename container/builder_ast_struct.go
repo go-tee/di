@@ -3,6 +3,7 @@ package container
 import (
 	"go/ast"
 
+	"github.com/go-tee/di/utils"
 	"github.com/go-tee/di/utils/shortcut"
 )
 
@@ -41,7 +42,7 @@ func (b *Builder) astTreeBlockStructs(tree Tree, prefix string) []ast.Decl {
 			})
 		}
 		if subtree, ok := dt.(Tree); ok {
-			blockName := firstUpper(name)
+			blockName := utils.FirstUpper(name)
 			fields = append(fields, &ast.Field{
 				Names: []*ast.Ident{{Name: name}},
 				Type:  shortcut.NewIdent(prefix + blockName + "ServicesBlock"),
