@@ -67,7 +67,7 @@ func (e defExpression) performSubstitutions(fset *token.FileSet, file *ast.File,
 				return fmt.Sprintf("container.%s", match[1])
 			}
 
-			return fmt.Sprintf("container.%s%s()", methodPrefix, firstUpper(match[1]))
+			return fmt.Sprintf("container.%s%s()", methodPrefix, methodName(paths[match[1]]))
 		})
 
 	return stmt
