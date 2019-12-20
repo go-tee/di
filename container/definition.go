@@ -7,7 +7,9 @@ import (
 )
 
 func NewServiceDefinition() *Definition {
-	return &Definition{}
+	return &Definition{
+		defProperties: map[string]defExpression{},
+	}
 }
 
 type Definition struct {
