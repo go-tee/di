@@ -37,7 +37,7 @@ func (b *Builder) astGetMethods(tree Tree, paths map[string][]string) []ast.Decl
 				Params:  def.astArguments(),
 				Results: shortcut.NewFieldList(def.interfaceOrLocalEntityType(b, false)),
 			},
-			Body: def.astFunctionBody(b.fset, b.file, b, name, name),
+			Body: def.astFunctionBody(b.fset, b.file, b, name, name, paths),
 		})
 	}
 	return methods

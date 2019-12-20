@@ -74,7 +74,7 @@ func (d *Definition) astDependencyArguments(builder *Builder) *ast.FieldList {
 	return funcParams
 }
 
-func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builder *Builder, name, serviceName string) *ast.BlockStmt {
+func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builder *Builder, name, serviceName string, paths map[string][]string) *ast.BlockStmt {
 	if name != "" && !d.defScope.isContainer() {
 		var arguments []string
 		for _, dep := range d.defReturns.dependencies() {
@@ -116,7 +116,7 @@ func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builde
 				Tok: token.DEFINE,
 				Lhs: lhs,
 				Rhs: []ast.Expr{
-					shortcut.NewIdent(d.defReturns.performSubstitutions(fset, file, builder, name == "")),
+					shortcut.NewIdent(d.defReturns.performSubstitutions(fset, file, builder, name == "", paths)),
 				},
 			},
 		}
@@ -140,7 +140,7 @@ func (d *Definition) astFunctionBody(fset *token.FileSet, file *ast.File, builde
 		instantiation = append(instantiation, &ast.AssignStmt{
 			Tok: token.ASSIGN,
 			Lhs: []ast.Expr{&ast.Ident{Name: serviceTempVariable + "." + property.Name}},
-			Rhs: []ast.Expr{&ast.Ident{Name: property.Value.performSubstitutions(fset, file, builder, name == "")}},
+			Rhs: []ast.Expr{&ast.Ident{Name: property.Value.performSubstitutions(fset, file, builder, name == "", paths)}},
 		})
 	}
 

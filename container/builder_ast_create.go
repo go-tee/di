@@ -7,7 +7,7 @@ import (
 	"github.com/go-tee/di/utils/shortcut"
 )
 
-func (b *Builder) astNewContainerFunc() *ast.FuncDecl {
+func (b *Builder) astNewContainerFunc(paths map[string][]string) *ast.FuncDecl {
 	containerTempVariable := "container"
 	statements := []ast.Stmt{
 		&ast.AssignStmt{
@@ -30,7 +30,7 @@ func (b *Builder) astNewContainerFunc() *ast.FuncDecl {
 					Rhs: []ast.Expr{
 						&ast.FuncLit{
 							Type: def.astFunctionPrototype(b),
-							Body: def.astFunctionBody(b.fset, b.file, b, "", name),
+							Body: def.astFunctionBody(b.fset, b.file, b, "", name, paths),
 						},
 					},
 				},

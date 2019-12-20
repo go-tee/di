@@ -32,7 +32,7 @@ func (e defExpression) dependencies() (deps []string) {
 	return pie.Strings(deps).Unique()
 }
 
-func (e defExpression) performSubstitutions(fset *token.FileSet, file *ast.File, builder *Builder, fromArgs bool) string {
+func (e defExpression) performSubstitutions(fset *token.FileSet, file *ast.File, builder *Builder, fromArgs bool, paths map[string][]string) string {
 	stmt := string(e)
 
 	// Replace environment variables.
@@ -56,7 +56,7 @@ func (e defExpression) performSubstitutions(fset *token.FileSet, file *ast.File,
 			}
 
 			if strings.Contains(match[1], "(") {
-				return fmt.Sprintf("container.%s%s", methodPrefix, firstUpper(match[1]))
+				return fmt.Sprintf("container.%s%s", methodPrefix, methodName(paths[match[1]]))
 			}
 
 			if !builder.HasDefinition(match[1]) {

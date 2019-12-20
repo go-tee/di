@@ -106,7 +106,7 @@ func (b *Builder) Build(packageName string, outputFile string) error {
 	b.file.Decls = append(b.file.Decls, b.astGetMethods(tree, paths)...)
 
 	b.file.Decls = append(b.file.Decls,
-		b.astNewContainerFunc(),
+		b.astNewContainerFunc(paths),
 		b.astDefaultContainer(),
 	)
 
